@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="LOG_DIR" value="./logs" />
+	<property name="LOG_NAME" value="springDataJpaDemo2" />
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{76} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_DIR}/${LOG_NAME}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_DIR}/${LOG_NAME}.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+			<!-- เก่าเกิน 30 วันให้ลบ -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- TRACE, DEBUG, INFO, WARN, ERROR -->
+
+	<logger name="org.springframework" level="info" />
+	<logger name="com.zaxxer.hikari.pool.HikariPool" level="warn" />
+	<logger name="org.mariadb.jdbc.client.impl.StandardClient" level="info" />
+	<!-- Hibernate ที่ระดับ DEBUG log เยอะมาก ให้แสดงแค่ info ยกเว้น SQL ด้านล่าง -->
+	<logger name="org.hibernate" level="info" />
+
+	<!-- Profile: dev -->
+	<springProfile name="dev">
+		<root level="DEBUG">
+			<appender-ref ref="CONSOLE" />
+			<appender-ref ref="ROLLING" />
+		</root>
+		<!-- แสดง SQL ที่ Hibernate สร้าง (แทน org.springframework.jdbc.core.JdbcTemplate ของเวอร์ชัน JdbcClient) -->
+		<logger name="org.hibernate.SQL" level="debug" />
+		<!-- แสดงค่า parameter ที่ส่งเข้า SQL (เปิดเมื่อต้องการ debug) -->
+		<!-- <logger name="org.hibernate.orm.jdbc.bind" level="trace" /> -->
+	</springProfile>
+
+	<!-- Profile: prod -->
+	<springProfile name="prod">
+		<root level="INFO">
+            <appender-ref ref="CONSOLE" />
+			<appender-ref ref="ROLLING" />
+		</root>
+	</springProfile>
+
+</configuration>

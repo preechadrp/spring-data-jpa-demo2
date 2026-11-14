@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: spring-data-jpa-demo2
+
+  # เติมเพื่อปิดการทำงานของ web server เพื่อให้โปรแกรมทำงานแบบ batch/command-line application
+  # main:
+  #   web-application-type: none
+
+  profiles:
+    active: dev
+
+  threads:
+    virtual:
+      enabled: true
